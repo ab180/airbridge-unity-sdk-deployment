@@ -2,6 +2,12 @@
 
 Airbridge SDK for Unity
 
+## Prerequisites
+
+### External Dependency Manager (EDM4U)
+
+The Airbridge Unity SDK requires the [External Dependency Manager for Unity (EDM4U)](https://github.com/googlesamples/unity-jar-resolver) to manage native dependencies.
+
 ## Install SDK
 
 1. Open Package Manager

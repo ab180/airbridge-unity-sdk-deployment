@@ -1,0 +1,7 @@
+{
+    "name": "co.ab180.airbridge-unity-sdk",
+    "version": "4.9.0",
+    "displayName": "Airbridge",
+    "description": "Airbridge SDK for Unity",
+    "unity": "2019.3"
+}

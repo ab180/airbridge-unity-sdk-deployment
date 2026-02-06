@@ -1,0 +1,171 @@
+package co.ab180.airbridge.unity;
+
+import static co.ab180.airbridge.unity.AirbridgeUtils.isValidString;
+import static co.ab180.airbridge.unity.AirbridgeUtils.joinedStringToAirbridgeTrackingBlocklist;
+import static co.ab180.airbridge.unity.AirbridgeUtils.joinedStringToList;
+
+import android.app.Activity;
+import android.app.Application;
+import android.content.ContentProvider;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.net.Uri;
+import android.util.Log;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.HashMap;
+import java.util.Objects;
+
+import co.ab180.airbridge.Airbridge;
+import co.ab180.airbridge.AirbridgeInAppPurchase;
+import co.ab180.airbridge.AirbridgeInAppPurchaseEnvironment;
+import co.ab180.airbridge.AirbridgeLifecycleIntegration;
+import co.ab180.airbridge.AirbridgeLogLevel;
+import co.ab180.airbridge.AirbridgeOptionBuilder;
+import co.ab180.airbridge.OnInAppPurchaseReceiveListener;
+
+public class AirbridgeContentProvider extends ContentProvider {
+
+    @Override
+    public boolean onCreate() {
+        try {
+            Application app = (Application) Objects.requireNonNull(getContext()).getApplicationContext();
+
+            AirbridgeOptionBuilder builder = new AirbridgeOptionBuilder(AirbridgeSettings.appName, AirbridgeSettings.appToken);
+            builder.setSDKDevelopmentPlatform("unity");
+
+            if (isValidString(AirbridgeSettings.sdkSignatureSecretID) && isValidString(AirbridgeSettings.sdkSignatureSecret)) {
+                builder.setSDKSignature(AirbridgeSettings.sdkSignatureSecretID, AirbridgeSettings.sdkSignatureSecret);
+            }
+
+            builder.setLogLevel(AirbridgeLogLevel.values()[AirbridgeSettings.logLevel]);
+
+            String customDomain = AirbridgeSettings.customDomain;
+            if (isValidString(customDomain)) {
+                builder.setTrackingLinkCustomDomains(joinedStringToList(customDomain, " "));
+            }
+
+            builder
+                    .setSessionTimeout(AirbridgeSettings.sessionTimeoutSeconds)
+                    .setHashUserInformationEnabled(AirbridgeSettings.userInfoHashEnabled)
+                    .setCollectLocationEnabled(AirbridgeSettings.locationCollectionEnabled)
+                    .setTrackAirbridgeDeeplinkOnlyEnabled(AirbridgeSettings.trackAirbridgeLinkOnly)
+                    .setAutoStartTrackingEnabled(AirbridgeSettings.autoStartTrackingEnabled)
+                    .setTrackMetaDeferredAppLinkEnabled(AirbridgeSettings.facebookDeferredAppLinkEnabled)
+                    .setOnAttributionReceived(AirbridgeUnity::processSetOnAttributionReceived)
+                    .setTrackInSessionLifeCycleEventEnabled(AirbridgeSettings.trackInSessionLifeCycleEventEnabled)
+                    .setPauseEventTransmitOnBackgroundEnabled(AirbridgeSettings.pauseEventTransmitOnBackgroundEnabled)
+                    .setClearEventBufferOnInitializeEnabled(AirbridgeSettings.clearEventBufferOnInitializeEnabled)
+                    .setSDKEnabled(AirbridgeSettings.sdkEnabled);
+
+            String appMarketIdentifier = AirbridgeSettings.appMarketIdentifier;
+            if (isValidString(appMarketIdentifier)) {
+                builder.setAppMarketIdentifier(appMarketIdentifier);
+            }
+
+            builder
+                    .setEventBufferCountLimit(AirbridgeSettings.eventBufferCountLimitInGibibyte)
+                    .setEventBufferSizeLimit(AirbridgeSettings.eventBufferSizeLimitInGibibyte)
+                    .setEventTransmitInterval(AirbridgeSettings.eventTransmitIntervalSeconds);
+
+            String facebookAppId = AirbridgeSettings.facebookAppId;
+            if (isValidString(facebookAppId)) {
+                builder.setMetaInstallReferrer(facebookAppId);
+            }
+
+            builder.setLifecycleIntegration(new AirbridgeLifecycleIntegration() {
+
+                @Nullable
+                @Override
+                public String getDataString(@NotNull Activity activity) {
+                    if (AirbridgeUnity.airbridgeLifecycleIntegration != null) {
+                        return AirbridgeUnity.airbridgeLifecycleIntegration.getDataString(activity);
+                    }
+                    return null;
+                }
+            });
+
+            HashMap<String, String> sdkAttributes = new HashMap<>();
+            sdkAttributes.put("wrapperName", "airbridge-unity-sdk");
+            sdkAttributes.put("wrapperVersion", "4.9.0");
+            builder.setSDKAttributes(sdkAttributes);
+
+            HashMap<String, Object> sdkWrapperOption = new HashMap<>();
+            sdkWrapperOption.put("isHandleAirbridgeDeeplinkOnly", AirbridgeSettings.isHandleAirbridgeDeeplinkOnly);
+            builder.setSDKWrapperOption(sdkWrapperOption);
+
+            builder.setInAppPurchaseEnvironment(
+                    AirbridgeSettings.inAppPurchaseEnvironment.equals(AirbridgeInAppPurchaseEnvironment.SANDBOX.getValue$airbridge_release()) ?
+                            AirbridgeInAppPurchaseEnvironment.SANDBOX :
+                            AirbridgeInAppPurchaseEnvironment.PRODUCTION
+            );
+            builder.setOnInAppPurchaseReceived(new OnInAppPurchaseReceiveListener() {
+                @Override
+                public void onInAppPurchaseReceived(@NotNull AirbridgeInAppPurchase airbridgeInAppPurchase) {
+                    if (AirbridgeUnity.inAppPurchaseCallback == null) return;
+
+                    String originalJson = airbridgeInAppPurchase.getPurchase().getOriginalJson();
+
+                    try {
+                        String result = AirbridgeUnity.inAppPurchaseCallback.Invoke(originalJson);
+                        HashMap<String, Object> resultMap = new HashMap<>(Objects.requireNonNull(AirbridgeJsonParser.from(result)));
+
+                        // Set Custom Attributes
+                        if (resultMap.containsKey(AirbridgeConstants.Param.CUSTOM_ATTRIBUTES)) {
+                            airbridgeInAppPurchase.setCustomAttributes(AirbridgeJsonUtils.safeConvertToMap(
+                                    resultMap.get(AirbridgeConstants.Param.CUSTOM_ATTRIBUTES)
+                            ));
+                        }
+                        // Set Semantic Attributes
+                        if (resultMap.containsKey(AirbridgeConstants.Param.SEMANTIC_ATTRIBUTES)) {
+                            airbridgeInAppPurchase.setSemanticAttributes(AirbridgeJsonUtils.safeConvertToMap(
+                                    resultMap.get(AirbridgeConstants.Param.SEMANTIC_ATTRIBUTES)
+                            ));
+                        }
+                    } catch (Throwable throwable) {
+                        Log.e(AirbridgeUnity.TAG, "Error occurs while calling {onInAppPurchaseReceived}", throwable);
+                    }
+                }
+            });
+
+            builder.setCollectTCFDataEnabled(AirbridgeSettings.collectTCFDataEnabled);
+
+            String trackingBlocklist = AirbridgeSettings.trackingBlocklist;
+            if (isValidString(trackingBlocklist)) {
+                builder.setTrackingBlocklist(joinedStringToAirbridgeTrackingBlocklist(trackingBlocklist, ","));
+            }
+
+            Airbridge.initializeSDK(app, builder.build());
+        } catch (Throwable throwable) {
+            Log.e(AirbridgeUnity.TAG, "Couldn't initialize SDK.", throwable);
+        }
+        return true;
+    }
+
+    @Override
+    public Cursor query(@NotNull Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+        return null;
+    }
+
+    @Override
+    public String getType(@NotNull Uri uri) {
+        return null;
+    }
+
+    @Override
+    public Uri insert(@NotNull Uri uri, ContentValues values) {
+        return null;
+    }
+
+    @Override
+    public int delete(@NotNull Uri uri, String selection, String[] selectionArgs) {
+        return 0;
+    }
+
+    @Override
+    public int update(@NotNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        return 0;
+    }
+}

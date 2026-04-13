@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (c) 2013 Calvin Rien
  *
  * Based on the JSON parser by Patrick van Bergen
@@ -707,15 +707,17 @@ internal static class AirbridgeJson
         {
             if (value is float)
             {
-                // Ignores NaN and Infinity values
                 if ((float.IsInfinity((float)value) || float.IsNaN((float)value)))
                     return false;
             }
-            else if (value is double || value is decimal)
+            else if (value is double)
             {
-                // Ignores NaN and Infinity values
-                if ((double.IsInfinity((double)value) || double.IsNaN((double)value)))
+                if (double.IsInfinity((double)value) || double.IsNaN((double)value))
                     return false;
+            }
+            else if (value is decimal)
+            {
+                // decimal cannot represent NaN or Infinity, always serializable
             }
 
             return true;

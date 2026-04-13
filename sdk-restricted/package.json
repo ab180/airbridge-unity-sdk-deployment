@@ -1,6 +1,6 @@
 {
     "name": "co.ab180.airbridge-unity-sdk-restricted",
-    "version": "4.9.0",
+    "version": "4.9.1",
     "displayName": "Airbridge Restricted",
     "description": "Airbridge Restricted SDK for Unity",
     "unity": "2019.3"

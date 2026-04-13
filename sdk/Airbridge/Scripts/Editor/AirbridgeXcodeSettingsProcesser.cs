@@ -30,7 +30,7 @@ public class AirbridgeXcodeSettingsProcesser
         
         if (!string.IsNullOrEmpty(airbridgeData.iOSURIScheme))
         {
-            AddScheme(pathToBuiltProject, airbridgeData.iOSURIScheme);   
+            AddScheme(pathToBuiltProject, airbridgeData.iOSURIScheme);
         }
         
         AddCustomDomainResInPlist(pathToBuiltProject);

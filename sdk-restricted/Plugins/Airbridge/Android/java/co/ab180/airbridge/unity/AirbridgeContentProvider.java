@@ -89,7 +89,7 @@ public class AirbridgeContentProvider extends ContentProvider {
 
             HashMap<String, String> sdkAttributes = new HashMap<>();
             sdkAttributes.put("wrapperName", "airbridge-unity-sdk-restricted");
-            sdkAttributes.put("wrapperVersion", "4.9.1");
+            sdkAttributes.put("wrapperVersion", "4.9.2");
             builder.setSDKAttributes(sdkAttributes);
 
             HashMap<String, Object> sdkWrapperOption = new HashMap<>();

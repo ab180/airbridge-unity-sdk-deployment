@@ -80,7 +80,7 @@
     
     builder = [builder setSDKAttributes: @{
         @"wrapperName": @"airbridge-unity-sdk",
-        @"wrapperVersion": @"4.9.2"
+        @"wrapperVersion": @"4.10.0"
     }];
     
     builder = [builder setSDKWrapperOption: @{

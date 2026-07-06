@@ -9,6 +9,71 @@ using System.Linq;
 
 public class AirbridgeXcodeSettingsProcesser
 {
+    private const string PodsProjectRelativePath = "Pods/Pods.xcodeproj/project.pbxproj";
+    private const string IPhoneOSDeploymentTarget = "IPHONEOS_DEPLOYMENT_TARGET";
+    private const string MinimumIOSDeploymentTarget = "15.0";
+
+    [PostProcessBuild(51)]
+    public static void UpdatePodsMinimumTarget(BuildTarget buildTarget, string pathToBuiltProject)
+    {
+        if (buildTarget != BuildTarget.iOS) return;
+
+        string pathPBXProject = Path.Combine(pathToBuiltProject, PodsProjectRelativePath);
+        if (!File.Exists(pathPBXProject)) return;
+
+        PBXProject project = new PBXProject();
+        string pbxProjectContent = File.ReadAllText(pathPBXProject);
+        project.ReadFromString(pbxProjectContent);
+
+        foreach (string targetGuid in GetNativeTargetGuids(pbxProjectContent))
+        {
+            project.SetBuildProperty(targetGuid, IPhoneOSDeploymentTarget, MinimumIOSDeploymentTarget);
+        }
+
+        File.WriteAllText(pathPBXProject, project.WriteToString());
+    }
+
+    private static List<string> GetNativeTargetGuids(string pbxProjectContent)
+    {
+        List<string> targetGuids = new List<string>();
+        bool isNativeTargetSection = false;
+
+        foreach (string line in pbxProjectContent.Split('\n'))
+        {
+            if (line.Contains("/* Begin PBXNativeTarget section */"))
+            {
+                isNativeTargetSection = true;
+                continue;
+            }
+
+            if (line.Contains("/* End PBXNativeTarget section */"))
+            {
+                break;
+            }
+
+            if (!isNativeTargetSection)
+            {
+                continue;
+            }
+
+            string trimmedLine = line.Trim();
+            if (!trimmedLine.EndsWith("= {"))
+            {
+                continue;
+            }
+
+            int targetNameStartIndex = trimmedLine.IndexOf(" /*");
+            if (targetNameStartIndex <= 0)
+            {
+                continue;
+            }
+
+            targetGuids.Add(trimmedLine.Substring(0, targetNameStartIndex));
+        }
+
+        return targetGuids;
+    }
+
     [PostProcessBuild]
     public static void OnPostBuild(BuildTarget buildTarget, string pathToBuiltProject)
     {

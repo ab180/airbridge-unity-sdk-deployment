@@ -8,7 +8,7 @@
 
 #import "UnityAppController.h"
 
-#import "AUAppDelegate.h"
+#import "AirbridgeUnityDelegate.h"
 
 @interface AUAppController : UnityAppController
 
@@ -18,12 +18,12 @@
 
 - (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
     [super application:app openURL:url options:options];
-    return [AUAppDelegate.instance application:app openURL:url options:options];
+    return [AirbridgeUnityDelegate trackDeeplinkWithURL:url];
 }
 
 - (BOOL)application:(UIApplication*)application continueUserActivity:(NSUserActivity*)userActivity restorationHandler:(void (^)(NSArray<id<UIUserActivityRestoring>>* _Nullable))restorationHandler {
     [super application:application continueUserActivity:userActivity restorationHandler:restorationHandler];
-    return [AUAppDelegate.instance application:application continueUserActivity:userActivity restorationHandler:restorationHandler];
+    return [AirbridgeUnityDelegate trackDeeplinkWithUserActivity:userActivity];
 }
 
 @end

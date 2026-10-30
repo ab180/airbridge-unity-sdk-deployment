@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-internal class AirbridgeUnsupportedPlugin: IAirbridgePlugin
+internal partial class AirbridgeUnsupportedPlugin: IAirbridgePlugin
 {
     public void EnableSDK() { UnsupportedPlatform(); }
 
@@ -58,6 +58,8 @@ internal class AirbridgeUnsupportedPlugin: IAirbridgePlugin
 
     public void TrackEvent(string category, Dictionary<string, object> semanticAttributes, Dictionary<string, object> customAttributes) { UnsupportedPlatform(); }
 
+    public void SetAdditionalEventAttributes(List<AirbridgeEventType> types, Dictionary<string, object> semanticAttributes, Dictionary<string, object> customAttributes) { UnsupportedPlatform(); }
+
     public void Click(string trackingLink, Action onSuccess, Action<Exception> onFailure) { UnsupportedPlatform(); }
 
     public void Impression(string trackingLink, Action onSuccess, Action<Exception> onFailure) { UnsupportedPlatform(); }
@@ -77,6 +79,8 @@ internal class AirbridgeUnsupportedPlugin: IAirbridgePlugin
 
     public void HandleWebInterfaceCommand(string command) { UnsupportedPlatform(); }
     
+    public void TrackStoreInAppPurchaseEvent(Dictionary<string, object> purchase, Dictionary<string, object> semanticAttributes, Dictionary<string, object> customAttributes) { UnsupportedPlatform(); }
+
     public void StartInAppPurchaseTracking() { UnsupportedPlatform(); }
 
     public void StopInAppPurchaseTracking() { UnsupportedPlatform(); }

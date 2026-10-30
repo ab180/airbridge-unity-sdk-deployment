@@ -39,11 +39,24 @@ class AirbridgeJsonParser {
         }
     }
 
-    private static JSONObject toJSONObject(String jsonString) throws JSONException {
-        if (jsonString == null
+    /**
+     * Convert Json String to List
+     */
+    static List<Object> fromArray(String jsonString) throws JSONException {
+        if (isBlank(jsonString)) {
+            return null;
+        }
+        return toList(new JSONArray(jsonString));
+    }
+
+    private static boolean isBlank(String jsonString) {
+        return jsonString == null
                 || jsonString.trim().equals("null")
-                || jsonString.trim().isEmpty()
-        ) {
+                || jsonString.trim().isEmpty();
+    }
+
+    private static JSONObject toJSONObject(String jsonString) throws JSONException {
+        if (isBlank(jsonString)) {
             return null;
         }
         return new JSONObject(jsonString);

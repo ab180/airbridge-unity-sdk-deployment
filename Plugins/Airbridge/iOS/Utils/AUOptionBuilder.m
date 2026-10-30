@@ -150,7 +150,7 @@
     }
     [builder setSDKAttributes:@{
         @"wrapperName": @"airbridge-unity-sdk",
-        @"wrapperVersion": @"4.11.0"
+        @"wrapperVersion": @"4.12.0"
     }];
     if (number(@"isHandleAirbridgeDeeplinkOnly")) {
         [builder setSDKWrapperOption:@{

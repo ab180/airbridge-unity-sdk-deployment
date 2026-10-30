@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using AOT;
 using UnityEngine;
 
-internal class AirbridgeIOSPlugin : IAirbridgePlugin
+internal partial class AirbridgeIOSPlugin : IAirbridgePlugin
 {
     #region Core
     [DllImport("__Internal")] private static extern void native_enableSDK();
@@ -239,6 +239,24 @@ internal class AirbridgeIOSPlugin : IAirbridgePlugin
             AirbridgeJson.Serialize(customAttributes)
         );
     }
+
+    [DllImport("__Internal")] private static extern void native_setAdditionalEventAttributes(
+        string typesJson,
+        string semanticJson,
+        string customJson
+    );
+    public void SetAdditionalEventAttributes(
+        List<AirbridgeEventType> types,
+        Dictionary<string, object> semanticAttributes,
+        Dictionary<string, object> customAttributes
+    )
+    {
+        native_setAdditionalEventAttributes(
+            AirbridgeJson.Serialize(types.ConvertAll(type => type.ToString())),
+            AirbridgeJson.Serialize(semanticAttributes),
+            AirbridgeJson.Serialize(customAttributes)
+        );
+    }
     #endregion
 
     #region Interface
@@ -453,6 +471,24 @@ internal class AirbridgeIOSPlugin : IAirbridgePlugin
     }
     #endregion
     
+    [DllImport("__Internal")] private static extern void native_trackStoreInAppPurchaseEvent(
+        string purchaseJson,
+        string semanticJson,
+        string customJson
+    );
+    public void TrackStoreInAppPurchaseEvent(
+        Dictionary<string, object> purchase,
+        Dictionary<string, object> semanticAttributes,
+        Dictionary<string, object> customAttributes
+    )
+    {
+        native_trackStoreInAppPurchaseEvent(
+            AirbridgeJson.Serialize(purchase),
+            AirbridgeJson.Serialize(semanticAttributes),
+            AirbridgeJson.Serialize(customAttributes)
+        );
+    }
+
     [DllImport("__Internal")] private static extern void native_startInAppPurchaseTracking();
     public void StartInAppPurchaseTracking()
     {

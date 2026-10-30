@@ -9,7 +9,7 @@ using System.Linq;
 [InitializeOnLoad]
 internal class AirbridgeMigrationHandler
 {
-    private const string Version = "4.11.0";
+    private const string Version = "4.12.0";
 
     private static string SavedVersionFilePath => Path.Combine(Application.dataPath, "Airbridge", "SavedVersion.txt");
 

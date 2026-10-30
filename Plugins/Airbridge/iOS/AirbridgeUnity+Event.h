@@ -15,4 +15,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 void native_trackEvent(const char* category, const char* semanticJson, const char* customJson);
 
+void native_setAdditionalEventAttributes(const char* typesJson, const char* semanticJson, const char* customJson);
+
+void native_trackStoreInAppPurchaseEvent(const char* purchaseJson, const char* semanticJson, const char* customJson);
+
 NS_ASSUME_NONNULL_END

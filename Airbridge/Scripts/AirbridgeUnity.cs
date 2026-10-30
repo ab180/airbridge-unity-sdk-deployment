@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// %Airbridge Unity SDK
 /// </summary>
-public class Airbridge
+public partial class Airbridge
 {
     private static readonly Lazy<IAirbridgePlugin> Lazy = new Lazy<IAirbridgePlugin>(() =>
     {
@@ -332,6 +332,49 @@ public class Airbridge
         });
     }
 
+    /// <summary>
+    /// Sets additional attributes of the events that are tracked by the SDK automatically.
+    /// Calling it again replaces the attributes, and passing none clears them.
+    /// </summary>
+    /// <param name="type"> The type of the events to apply the attributes.</param>
+    /// <param name="semanticAttributes"> The semantic attributes of the events.</param>
+    /// <param name="customAttributes"> The custom attributes of the events.</param>
+    public static void SetAdditionalEventAttributes(
+        AirbridgeEventType type,
+        Dictionary<string, object> semanticAttributes = null,
+        Dictionary<string, object> customAttributes = null
+    )
+    {
+        SetAdditionalEventAttributes(
+            new List<AirbridgeEventType> { type },
+            semanticAttributes,
+            customAttributes
+        );
+    }
+
+    /// <summary>
+    /// Sets additional attributes of the events that are tracked by the SDK automatically.
+    /// Calling it again replaces the attributes, and passing none clears them.
+    /// </summary>
+    /// <param name="types"> The types of the events to apply the attributes.</param>
+    /// <param name="semanticAttributes"> The semantic attributes of the events.</param>
+    /// <param name="customAttributes"> The custom attributes of the events.</param>
+    public static void SetAdditionalEventAttributes(
+        List<AirbridgeEventType> types,
+        Dictionary<string, object> semanticAttributes = null,
+        Dictionary<string, object> customAttributes = null
+    )
+    {
+        AirbridgeNullCheck.CallMethodWithNullCheck(() =>
+        {
+            AirbridgePlugin.SetAdditionalEventAttributes(
+                AirbridgeNullCheck.RequireNonNull(types),
+                semanticAttributes,
+                customAttributes
+            );
+        });
+    }
+
     #endregion
 
     #region Placement
@@ -516,7 +559,32 @@ public class Airbridge
     #region IAP
     
     /// <summary>
+    /// Tracks an in-app purchase event with the purchase passed from the app.
+    /// <see cref="SetOnInAppPurchaseReceived"/> is not called for these purchases, and duplicates
+    /// are not dropped.
+    /// </summary>
+    /// <param name="purchase"> The purchase to be tracked. It needs a `transactionIdentifier` entry.</param>
+    /// <param name="semanticAttributes"> The semantic attributes of the event.</param>
+    /// <param name="customAttributes"> The custom attributes of the event.</param>
+    public static void TrackStoreInAppPurchaseEvent(
+        Dictionary<string, object> purchase,
+        Dictionary<string, object> semanticAttributes = null,
+        Dictionary<string, object> customAttributes = null
+    )
+    {
+        AirbridgeNullCheck.CallMethodWithNullCheck(() =>
+        {
+            AirbridgePlugin.TrackStoreInAppPurchaseEvent(
+                AirbridgeNullCheck.RequireNonNull(purchase),
+                semanticAttributes,
+                customAttributes
+            );
+        });
+    }
+
+    /// <summary>
     /// Start collecting and transferring purchases events.
+    /// Will be deprecated in a future release. Use <see cref="TrackStoreInAppPurchaseEvent"/> instead.
     /// </summary>
     public static void StartInAppPurchaseTracking()
     {

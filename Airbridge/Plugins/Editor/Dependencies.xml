@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <dependencies>
     <androidPackages>
-        <androidPackage spec="io.airbridge:sdk-android:4.11.3">
+        <androidPackage spec="io.airbridge:sdk-android:4.12.1">
             <repositories>
                 <repository>https://sdk-download.airbridge.io/maven</repository>
             </repositories>
         </androidPackage>
     </androidPackages>
     <remoteSwiftPackage url="https://github.com/ab180/airbridge-ios-sdk-deployment"
-                        version="4.11.1">
+                        version="4.12.0">
         <swiftPackage name="Airbridge"
                       replacesPod="airbridge-ios-sdk"
                       target="All"/>

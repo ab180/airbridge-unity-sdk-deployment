@@ -12,11 +12,15 @@ import android.util.Log;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import co.ab180.airbridge.Airbridge;
 import co.ab180.airbridge.AirbridgeLifecycleIntegration;
+import co.ab180.airbridge.common.AirbridgeEventType;
+import co.ab180.airbridge.common.AirbridgeStoreInAppPurchase;
 import co.ab180.airbridge.common.AirbridgeTrackingBlocklist;
 
 public class AirbridgeUnity {
@@ -295,6 +299,61 @@ public class AirbridgeUnity {
             Airbridge.trackEvent(category, semanticAttributes, customAttributes);
         } catch (Throwable throwable) {
             Log.e(TAG, "Error occurs while calling {trackEvent}", throwable);
+        }
+    }
+
+    public static void setAdditionalEventAttributes(
+            String typesJsonString,
+            String semanticAttributesJsonString,
+            String customAttributesJsonString
+    ) {
+        try {
+            List<AirbridgeEventType> types = new ArrayList<>();
+            List<Object> typeNames = AirbridgeJsonParser.fromArray(typesJsonString);
+            if (typeNames != null) {
+                for (Object typeName : typeNames) {
+                    AirbridgeEventType type = eventTypeOf(typeName);
+                    if (type == null) {
+                        Log.w(TAG, "Unknown event type: " + typeName);
+                    } else {
+                        types.add(type);
+                    }
+                }
+            }
+
+            Map<String, Object> semanticAttributes = AirbridgeJsonParser.from(semanticAttributesJsonString);
+            Map<String, Object> customAttributes = AirbridgeJsonParser.from(customAttributesJsonString);
+            Airbridge.setAdditionalEventAttributes(types, semanticAttributes, customAttributes);
+        } catch (Throwable throwable) {
+            Log.e(TAG, "Error occurs while calling {setAdditionalEventAttributes}", throwable);
+        }
+    }
+
+    private static AirbridgeEventType eventTypeOf(Object name) {
+        for (AirbridgeEventType type : AirbridgeEventType.values()) {
+            if (type.name().equals(name)) {
+                return type;
+            }
+        }
+        return null;
+    }
+
+    public static void trackStoreInAppPurchaseEvent(
+            String purchaseJsonString,
+            String semanticAttributesJsonString,
+            String customAttributesJsonString
+    ) {
+        try {
+            Map<String, Object> purchase = AirbridgeJsonParser.from(purchaseJsonString);
+            Map<String, Object> semanticAttributes = AirbridgeJsonParser.from(semanticAttributesJsonString);
+            Map<String, Object> customAttributes = AirbridgeJsonParser.from(customAttributesJsonString);
+            Airbridge.trackStoreInAppPurchaseEvent(
+                    new AirbridgeStoreInAppPurchase(purchase),
+                    semanticAttributes,
+                    customAttributes
+            );
+        } catch (Throwable throwable) {
+            Log.e(TAG, "Error occurs while calling {trackStoreInAppPurchaseEvent}", throwable);
         }
     }
 

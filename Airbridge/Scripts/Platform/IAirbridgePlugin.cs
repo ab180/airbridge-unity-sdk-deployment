@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-internal interface IAirbridgePlugin
+internal partial interface IAirbridgePlugin
 {
     #region Core
 
@@ -60,6 +60,12 @@ internal interface IAirbridgePlugin
         /* CanBeNull */ Dictionary<string, object> customAttributes
     );
 
+    void SetAdditionalEventAttributes(
+        List<AirbridgeEventType> types,
+        /* CanBeNull */ Dictionary<string, object> semanticAttributes,
+        /* CanBeNull */ Dictionary<string, object> customAttributes
+    );
+
     #endregion
 
     #region Placement
@@ -92,6 +98,12 @@ internal interface IAirbridgePlugin
     
     #region IAP
     
+    void TrackStoreInAppPurchaseEvent(
+        Dictionary<string, object> purchase,
+        /* CanBeNull */ Dictionary<string, object> semanticAttributes,
+        /* CanBeNull */ Dictionary<string, object> customAttributes
+    );
+
     void StartInAppPurchaseTracking();
     void StopInAppPurchaseTracking();
     bool IsInAppPurchaseTrackingEnabled();

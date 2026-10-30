@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-internal class AirbridgeAndroidPlugin : IAirbridgePlugin
+internal partial class AirbridgeAndroidPlugin : IAirbridgePlugin
 {
     private static AndroidJavaObject airbridge = new AndroidJavaObject("co.ab180.airbridge.unity.AirbridgeUnity");
 
@@ -197,6 +197,20 @@ internal class AirbridgeAndroidPlugin : IAirbridgePlugin
         );
     }
 
+    public void SetAdditionalEventAttributes(
+        List<AirbridgeEventType> types,
+        /* CanBeNull */ Dictionary<string, object> semanticAttributes,
+        /* CanBeNull */ Dictionary<string, object> customAttributes
+    )
+    {
+        airbridge.CallStatic(
+            methodName: "setAdditionalEventAttributes",
+            AirbridgeJson.Serialize(types.ConvertAll(type => type.ToString())),
+            AirbridgeJson.Serialize(semanticAttributes),
+            AirbridgeJson.Serialize(customAttributes)
+        );
+    }
+
     #endregion
 
     #region Placement
@@ -312,6 +326,20 @@ internal class AirbridgeAndroidPlugin : IAirbridgePlugin
     
     #region IAP
     
+    public void TrackStoreInAppPurchaseEvent(
+        Dictionary<string, object> purchase,
+        /* CanBeNull */ Dictionary<string, object> semanticAttributes,
+        /* CanBeNull */ Dictionary<string, object> customAttributes
+    )
+    {
+        airbridge.CallStatic(
+            methodName: "trackStoreInAppPurchaseEvent",
+            AirbridgeJson.Serialize(purchase),
+            AirbridgeJson.Serialize(semanticAttributes),
+            AirbridgeJson.Serialize(customAttributes)
+        );
+    }
+
     public void StartInAppPurchaseTracking()
     {
         airbridge.CallStatic("startInAppPurchaseTracking");

@@ -175,6 +175,14 @@ internal class AirbridgeData : AirbridgeScriptableObject
     /// <summary> Sets whether SKAdNetwork CV calculation should be performed on the server.</summary>
     public bool calculateSKAdNetworkByServer = false;
 
+    /// <summary>
+    /// When set to `true`, the %Airbridge link copied to the clipboard is used for deferred deep linking and attribution on the first launch after installation.
+    /// @note
+    /// Android 12 or later displays a toast when the clipboard is read.
+    /// iOS 14–15 displays a paste banner, and iOS 16 or later may ask the user to allow pasting.
+    /// </summary>
+    public bool clipboardLinkEnabled = false;
+
     private void OnEnable()
     {
         MigrateCustomDomain();

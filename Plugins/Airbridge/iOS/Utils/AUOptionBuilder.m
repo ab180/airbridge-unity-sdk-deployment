@@ -104,6 +104,9 @@
     if (number(@"calculateSKAdNetworkByServerEnabled") != nil) {
         [builder setCalculateSKAdNetworkByServerEnabled:number(@"calculateSKAdNetworkByServerEnabled").boolValue];
     }
+    if (number(@"clipboardLinkEnabled") != nil) {
+        [builder setClipboardLinkEnabled:number(@"clipboardLinkEnabled").boolValue];
+    }
     if (number(@"isMigrateUnisolatedStorageEnabled") != nil) {
         [builder setInternalOptionWithKey:@"migrateUnisolatedStorageEnabled" value:number(@"isMigrateUnisolatedStorageEnabled")];
     }
@@ -150,7 +153,7 @@
     }
     [builder setSDKAttributes:@{
         @"wrapperName": @"airbridge-unity-sdk",
-        @"wrapperVersion": @"4.12.0"
+        @"wrapperVersion": @"4.13.0"
     }];
     if (number(@"isHandleAirbridgeDeeplinkOnly")) {
         [builder setSDKWrapperOption:@{

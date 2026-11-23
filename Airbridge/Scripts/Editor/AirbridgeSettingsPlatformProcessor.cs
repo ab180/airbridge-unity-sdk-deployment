@@ -79,6 +79,7 @@ internal class AirbridgeSettingsAndroidProcessor : AirbridgeSettingsPlatformProc
                 + $"public static boolean trackAirbridgeLinkOnly = {Data.trackAirbridgeLinkOnly.ToString().ToLower()};\n"
                 + $"public static boolean autoStartTrackingEnabled = {Data.autoStartTrackingEnabled.ToString().ToLower()};\n"
                 + $"public static boolean facebookDeferredAppLinkEnabled = {Data.facebookDeferredAppLinkEnabled.ToString().ToLower()};\n"
+                + $"public static boolean clipboardLinkEnabled = {Data.clipboardLinkEnabled.ToString().ToLower()};\n"
                 + $"public static boolean pauseEventTransmitOnBackgroundEnabled = {Data.pauseEventTransmitOnBackgroundEnabled.ToString().ToLower()};\n"
                 + $"public static boolean clearEventBufferOnInitializeEnabled = {Data.resetEventBufferEnabled.ToString().ToLower()};\n"
                 + $"public static boolean sdkEnabled = {Data.sdkEnabled.ToString().ToLower()};\n"
@@ -321,6 +322,7 @@ internal class AirbridgeSettingsIosProcessor : AirbridgeSettingsPlatformProcesso
                     values: Data.trackingBlocklist
                 ) + "\";\n"
                 + $"static BOOL calculateSKAdNetworkByServer = {Data.calculateSKAdNetworkByServer.ToString().ToLower()};\n"
+                + $"static BOOL clipboardLinkEnabled = {Data.clipboardLinkEnabled.ToString().ToLower()};\n"
                 + "\n"
                 + "#endif\n";
 

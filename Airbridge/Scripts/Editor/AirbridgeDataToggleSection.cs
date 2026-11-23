@@ -132,6 +132,9 @@ internal class AirbridgeDataToggleSection
         SerializedProperty facebookDeferredAppLinkEnabledProperty = serializedObject.FindProperty("facebookDeferredAppLinkEnabled");
         EditorGUILayout.PropertyField(facebookDeferredAppLinkEnabledProperty, new GUILayoutOption[] { });
 
+        SerializedProperty clipboardLinkEnabledProperty = serializedObject.FindProperty("clipboardLinkEnabled");
+        EditorGUILayout.PropertyField(clipboardLinkEnabledProperty, new GUILayoutOption[] { });
+
         SerializedProperty iOSTrackingAuthorizeTimeoutSecondsProperty = serializedObject.FindProperty("iOSTrackingAuthorizeTimeoutSeconds");
         EditorGUILayout.PropertyField(iOSTrackingAuthorizeTimeoutSecondsProperty, new GUIContent("iOS Tracking Authorize Timeout Seconds"), new GUILayoutOption[] { });
 

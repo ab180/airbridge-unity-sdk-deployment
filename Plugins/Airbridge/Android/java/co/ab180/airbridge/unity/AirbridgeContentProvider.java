@@ -54,6 +54,7 @@ public class AirbridgeContentProvider extends ContentProvider {
                     .setTrackAirbridgeDeeplinkOnlyEnabled(AirbridgeSettings.trackAirbridgeLinkOnly)
                     .setAutoStartTrackingEnabled(AirbridgeSettings.autoStartTrackingEnabled)
                     .setTrackMetaDeferredAppLinkEnabled(AirbridgeSettings.facebookDeferredAppLinkEnabled)
+                    .setClipboardLinkEnabled(AirbridgeSettings.clipboardLinkEnabled)
                     .setOnAttributionReceived(AirbridgeUnity::processSetOnAttributionReceived)
                     .setPauseEventTransmitOnBackgroundEnabled(AirbridgeSettings.pauseEventTransmitOnBackgroundEnabled)
                     .setClearEventBufferOnInitializeEnabled(AirbridgeSettings.clearEventBufferOnInitializeEnabled)
@@ -88,7 +89,7 @@ public class AirbridgeContentProvider extends ContentProvider {
 
             HashMap<String, String> sdkAttributes = new HashMap<>();
             sdkAttributes.put("wrapperName", "airbridge-unity-sdk");
-            sdkAttributes.put("wrapperVersion", "4.12.0");
+            sdkAttributes.put("wrapperVersion", "4.13.0");
             builder.setSDKAttributes(sdkAttributes);
 
             HashMap<String, Object> sdkWrapperOption = new HashMap<>();

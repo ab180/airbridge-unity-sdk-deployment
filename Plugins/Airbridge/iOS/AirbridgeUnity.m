@@ -49,6 +49,7 @@
     options[@"collectTCFDataEnabled"] = @(collectTCFDataEnabled);
     options[@"trackingBlocklist"] = [trackingBlocklist componentsSeparatedByString:@","];
     options[@"calculateSKAdNetworkByServerEnabled"] = @(calculateSKAdNetworkByServer);
+    options[@"clipboardLinkEnabled"] = @(clipboardLinkEnabled);
     options[@"sdkDevelopmentPlatform"] = @"unity";
     options[@"trackingLinkCustomDomains"] = [customDomain componentsSeparatedByCharactersInSet:
         NSCharacterSet.whitespaceAndNewlineCharacterSet];
